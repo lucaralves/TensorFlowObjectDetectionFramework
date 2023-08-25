@@ -1,0 +1,26 @@
+<annotation>
+	<folder>train</folder>
+	<filename>108.jpg</filename>
+	<path>C:\Users\TECRA\Desktop\Projetos\TensorFlowEnv\Tensorflow\workspace\images\train\108.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>230</width>
+		<height>270</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>CocaCola</name>
+		<pose>Unspecified</pose>
+		<truncated>1</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>39</xmin>
+			<ymin>13</ymin>
+			<xmax>230</xmax>
+			<ymax>269</ymax>
+		</bndbox>
+	</object>
+</annotation>

@@ -1,0 +1,50 @@
+<annotation>
+	<folder>train</folder>
+	<filename>110 (2).jpg</filename>
+	<path>C:\Users\TECRA\Desktop\Projetos\TensorFlowEnv\Tensorflow\workspace\images\train\110 (2).jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>230</width>
+		<height>270</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>Pepsi</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>25</xmin>
+			<ymin>6</ymin>
+			<xmax>87</xmax>
+			<ymax>263</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>Pepsi</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>89</xmin>
+			<ymin>7</ymin>
+			<xmax>149</xmax>
+			<ymax>263</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>Pepsi</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>151</xmin>
+			<ymin>7</ymin>
+			<xmax>212</xmax>
+			<ymax>264</ymax>
+		</bndbox>
+	</object>
+</annotation>

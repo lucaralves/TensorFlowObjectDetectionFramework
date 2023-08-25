@@ -1,0 +1,26 @@
+<annotation>
+	<folder>train</folder>
+	<filename>119 (2).jpg</filename>
+	<path>C:\Users\TECRA\Desktop\Projetos\TensorFlowEnv\Tensorflow\workspace\images\train\119 (2).jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>230</width>
+		<height>270</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>Pepsi</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>43</xmin>
+			<ymin>30</ymin>
+			<xmax>187</xmax>
+			<ymax>265</ymax>
+		</bndbox>
+	</object>
+</annotation>

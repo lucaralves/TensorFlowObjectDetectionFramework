@@ -1,0 +1,26 @@
+<annotation>
+	<folder>test</folder>
+	<filename>8 (2).jpg</filename>
+	<path>C:\Users\TECRA\Desktop\Projetos\TensorFlowEnv\Tensorflow\workspace\images\test\8 (2).jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>230</width>
+		<height>270</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>Pepsi</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>126</xmin>
+			<ymin>43</ymin>
+			<xmax>193</xmax>
+			<ymax>248</ymax>
+		</bndbox>
+	</object>
+</annotation>
