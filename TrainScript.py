@@ -6,6 +6,32 @@ from object_detection.protos import pipeline_pb2
 from google.protobuf import text_format
 
 #
+# FUNÇÃO QUE LÊ O NÚMERO ASSOCIADO A UM CHECKPOINT.
+#
+def readCheckpointNumber(checkpointPath):
+
+    reader = tf.train.load_checkpoint(checkpointPath)
+    try:
+        checkpointCounter = reader.get_tensor("save_counter/.ATTRIBUTES/VARIABLE_VALUE")
+    except:
+        checkpointCounter = 0
+
+    return checkpointCounter
+
+#
+# FUNÇÃO QUE LÊ A QUANTIDADE DE STEPS DE UM CHECKPOINT.
+#
+def readCheckPointSteps(checkpointPath):
+
+    reader = tf.train.load_checkpoint(checkpointPath)
+    try:
+        steps = reader.get_tensor("optimizer/iter/.ATTRIBUTES/VARIABLE_VALUE")
+    except:
+        steps = 0
+
+    return steps
+
+#
 # FUNÇÃO QUE LISTA AS VARIÁVEIS DE UM CHECKPOINT.
 #
 def printCheckPointVariables(checkpointPath):
@@ -20,21 +46,6 @@ def printCheckPointVariables(checkpointPath):
         print("=" * 50)
 
 #
-# FUNÇÃO QUE LÊ A QUANTIDADE DE STEPS DE UM CHECKPOINT.
-#
-def readCheckPointVariables(checkpointPath):
-
-    reader = tf.train.load_checkpoint(checkpointPath)
-    try:
-        steps = reader.get_tensor("optimizer/iter/.ATTRIBUTES/VARIABLE_VALUE")
-        checkpointCounter = reader.get_tensor("save_counter/.ATTRIBUTES/VARIABLE_VALUE")
-    except:
-        steps = 0
-        checkpointCounter = 0
-
-    return steps, checkpointCounter
-
-#
 # FUNÇÃO QUE GUARDA NO DISCO O ÚLTIMO CHECKPOINT.
 #
 def saveLastCheckPoint():
@@ -47,32 +58,28 @@ def saveLastCheckPoint():
             shutil.rmtree(item_path)
 
     all_files = os.listdir(TFODStruct.paths["TRAIN_OUTPUT_PATH"])
-    checkpoint_files_index = [file for file in all_files if file.endswith(".index")]
-    checkpoint_files = [file for file in all_files if file.endswith(".data-00000-of-00001")]
+    checkpoint_files_path = [os.path.join(TFODStruct.paths["TRAIN_OUTPUT_PATH"], os.path.splitext(file)[0])
+                        for file in all_files if file.endswith(".index")]
 
-    if checkpoint_files_index:
-        latest_checkpoint = max(checkpoint_files_index)
+    if checkpoint_files_path:
+        latest_checkpoint = max(checkpoint_files_path, key=readCheckpointNumber)
 
-        source_checkpoint = os.path.join(TFODStruct.paths["TRAIN_OUTPUT_PATH"], latest_checkpoint)
-        target_checkpoint = os.path.join(TFODStruct.paths["CHECKPOINT_PATH"], 'latest-ckpt.index')
+        source_checkpoint_index = latest_checkpoint + '.index'
+        target_checkpoint_index = os.path.join(TFODStruct.paths["CHECKPOINT_PATH"],
+                                         'latest-ckpt.index')
+        source_checkpoint_data = latest_checkpoint + '.data-00000-of-00001'
+        target_checkpoint_data = os.path.join(TFODStruct.paths["CHECKPOINT_PATH"],
+                                          'latest-ckpt.data-00000-of-00001')
 
-        shutil.copy(source_checkpoint, target_checkpoint)
-
-    if checkpoint_files:
-        latest_checkpoint = max(checkpoint_files)
-
-        source_checkpoint = os.path.join(TFODStruct.paths["TRAIN_OUTPUT_PATH"], latest_checkpoint)
-        target_checkpoint = os.path.join(TFODStruct.paths["CHECKPOINT_PATH"], 'latest-ckpt.data-00000-of-00001')
-
-        shutil.copy(source_checkpoint, target_checkpoint)
-
+        shutil.copy(source_checkpoint_index, target_checkpoint_index)
+        shutil.copy(source_checkpoint_data, target_checkpoint_data)
 
 #
 # FUNÇÃO QUE TREINA O MODELO E CONFIGURA A PIPELINE DE TREINO.
 #
 def trainSSDMobNet(batchSize, numSteps, warmupSteps, learningRateBase, warmupLearningRate):
 
-    checkpointSteps = readCheckPointVariables(checkpointPath=
+    checkpointSteps = readCheckPointSteps(checkpointPath=
                                               os.path.join(TFODStruct.paths['CHECKPOINT_PATH'], 'latest-ckpt'))
     totalSteps = checkpointSteps[0] + numSteps
     totalWarmUpSteps = checkpointSteps[0] + warmupSteps
@@ -97,6 +104,7 @@ def trainSSDMobNet(batchSize, numSteps, warmupSteps, learningRateBase, warmupLea
     pipeline_config.train_config.num_steps = totalSteps
     pipeline_config.train_config.fine_tune_checkpoint = \
         os.path.join(TFODStruct.paths['CHECKPOINT_PATH'], 'latest-ckpt')
+    pipeline_config.train_config.fine_tune_checkpoint_version = 'V1'
     pipeline_config.train_config.fine_tune_checkpoint_type = 'detection'
     pipeline_config.train_input_reader.label_map_path = TFODStruct.files['LABELMAP']
     pipeline_config.train_input_reader.tf_record_input_reader.input_path[:] = \
@@ -118,5 +126,5 @@ def trainSSDMobNet(batchSize, numSteps, warmupSteps, learningRateBase, warmupLea
 
 
 printCheckPointVariables(os.path.join(TFODStruct.paths['CHECKPOINT_PATH'], 'latest-ckpt'))
-trainSSDMobNet(batchSize=10, numSteps=1000, warmupSteps=500, learningRateBase=0.03, warmupLearningRate=0.007)
+trainSSDMobNet(batchSize=10, numSteps=200, warmupSteps=100, learningRateBase=0.03, warmupLearningRate=0.007)
 saveLastCheckPoint()
