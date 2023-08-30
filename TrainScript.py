@@ -81,8 +81,8 @@ def trainSSDMobNet(batchSize, numSteps, warmupSteps, learningRateBase, warmupLea
 
     checkpointSteps = readCheckPointSteps(checkpointPath=
                                               os.path.join(TFODStruct.paths['CHECKPOINT_PATH'], 'latest-ckpt'))
-    totalSteps = checkpointSteps[0] + numSteps
-    totalWarmUpSteps = checkpointSteps[0] + warmupSteps
+    totalSteps = checkpointSteps + numSteps
+    totalWarmUpSteps = checkpointSteps + warmupSteps
 
     pipeline_config = pipeline_pb2.TrainEvalPipelineConfig()
     with tf.io.gfile.GFile(TFODStruct.files['PIPELINE_CONFIG'], "r") as f:
@@ -104,7 +104,7 @@ def trainSSDMobNet(batchSize, numSteps, warmupSteps, learningRateBase, warmupLea
     pipeline_config.train_config.num_steps = totalSteps
     pipeline_config.train_config.fine_tune_checkpoint = \
         os.path.join(TFODStruct.paths['CHECKPOINT_PATH'], 'latest-ckpt')
-    pipeline_config.train_config.fine_tune_checkpoint_version = 'V1'
+    pipeline_config.train_config.fine_tune_checkpoint_version = 'V2'
     pipeline_config.train_config.fine_tune_checkpoint_type = 'detection'
     pipeline_config.train_input_reader.label_map_path = TFODStruct.files['LABELMAP']
     pipeline_config.train_input_reader.tf_record_input_reader.input_path[:] = \
@@ -117,11 +117,16 @@ def trainSSDMobNet(batchSize, numSteps, warmupSteps, learningRateBase, warmupLea
     with tf.io.gfile.GFile(TFODStruct.files['PIPELINE_CONFIG'], "wb") as f:
         f.write(config_text)
 
+    if numSteps < 1000:
+        checkpointFrequency = 100
+    else:
+        checkpointFrequency = 1000
+
     TRAINING_SCRIPT = os.path.join(TFODStruct.paths['APIMODEL_PATH'], 'research', 'object_detection',
                                    'model_main_tf2.py')
-    command = "python {} --model_dir={} --pipeline_config_path={} --num_train_steps={}". \
+    command = "python {} --model_dir={} --pipeline_config_path={} --num_train_steps={} --checkpoint_every_n={}". \
         format(TRAINING_SCRIPT, TFODStruct.paths['TRAIN_OUTPUT_PATH'],
-               TFODStruct.files['PIPELINE_CONFIG'], totalSteps)
+               TFODStruct.files['PIPELINE_CONFIG'], totalSteps, checkpointFrequency)
     os.system(command)
 
 
