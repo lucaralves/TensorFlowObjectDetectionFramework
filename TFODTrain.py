@@ -120,7 +120,8 @@ def trainSSDMobNet(numSteps, warmupSteps, learningRateBase,
 
     TRAINING_SCRIPT = os.path.join(TFODStruct.paths['APIMODEL_PATH'], 'research', 'object_detection',
                                    'model_main_tf2.py')
-    command = "python {} --model_dir={} --pipeline_config_path={} --num_train_steps={} --checkpoint_every_n={} --checkpoint_max_to_keep={}". \
+    command = "python {} --model_dir={} --pipeline_config_path={} --num_train_steps={} " \
+              "--checkpoint_every_n={} --checkpoint_max_to_keep={}". \
         format(TRAINING_SCRIPT, TFODStruct.paths['TRAIN_OUTPUT_PATH'],
                TFODStruct.files['PIPELINE_CONFIG'], totalSteps, checkpointFrequency, checkpointMaxToKeep)
     os.system(command)
